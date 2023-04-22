@@ -1,0 +1,10 @@
+{
+    "name": "Inmarsat web console",
+    "short_name": "IWC",
+    "theme_color": "#000000",
+    "background_color": "#ffffff",
+    "display": "fullscreen",
+    "orientation": "portrait",
+    "scope": "/",
+    "start_url": "/"
+  }
