@@ -42,7 +42,7 @@ export default (serverReadyCallback: (app: express.Express, io: SocketIOServer) 
         try {
             const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
             const certificate = fs.readFileSync(privateCaPath, 'utf8');
-            const credentials = { key: privateKey, cert: certificate };
+            const credentials = { key: privateKey, cert: certificate, host: '0.0.0.0' };
             httpServer = https.createServer(credentials, app);
         } catch (error) {
             console.error(error, 'Make sure that you generated the server certificates using generate-cert.sh');
@@ -66,10 +66,11 @@ export default (serverReadyCallback: (app: express.Express, io: SocketIOServer) 
 
     const io = new SocketIOServer(httpServer);
 
-    httpServer.listen(serverPort, () => {
+    httpServer.listen(parseInt(serverPort!), '0.0.0.0', () => {
         const port = (<any>httpServer.address()).port;
+        const address = (<any>httpServer.address());
         const type = isSecure ? 'https://' : 'http://';
-        console.log(`Server started: ${type}localhost:${port}`);
+        console.log(`Server started: ${type}${address.address}:${port}`);
         serverReadyCallback(app, io);
     });
 }

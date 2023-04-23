@@ -31,7 +31,7 @@ export default class {
                     ts: stat.mtime.getTime(),
                 }
             })
-            .sort((a, b) => a.ts - b.ts)
+            .sort((a, b) => a.timestamp - b.timestamp)
             .forEach(message => this.addToHistory(message));
     }
 
