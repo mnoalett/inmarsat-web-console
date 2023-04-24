@@ -11,7 +11,6 @@ import waitForFile from './waitForFile';
 
 import {
     jsonExtension,
-    minimumFilesSize,
     satdumpFilePath,
     satdumpLogPath,
 } from './settings';
@@ -61,11 +60,6 @@ createServer(async (app, io) => {
             broadcastMessage('New file detected: ' + fileName);
 
             const fileStat = await waitForFile(unprocessedFilePath);
-
-            if(fileStat.size < minimumFilesSize) {
-                broadcastMessage('Size too small skipping: ' + fileName);
-                return;
-            }
 
             let rawdata = fs.readFileSync(unprocessedFilePath, 'utf-8');
             let message = JSON.parse(rawdata);
