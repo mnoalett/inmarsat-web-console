@@ -15,7 +15,7 @@ import {
     privateCaPath,
     privateKeyPath,
     serverPort,
-    username
+    username,
 } from './settings';
 
 export default (serverReadyCallback: (app: express.Express, io: SocketIOServer) => void): void => {

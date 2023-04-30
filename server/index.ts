@@ -5,7 +5,6 @@ import * as path from 'path';
 import { Telegraf } from 'telegraf';
 
 import History from './History';
-import LogEmitter from './LogEmitter';
 
 import createServer from './createServer';
 import waitForFile from './waitForFile';
@@ -15,7 +14,6 @@ import {
     jsonExtension,
     safetyNet,
     satdumpFilePath,
-    satdumpLogPath,
     telegramChannel,
     telegramToken
 } from './settings';
@@ -46,13 +44,6 @@ createServer(async (app, io) => {
             socketCallback(history.getHistory())
         );
     });
-
-    try {
-        const logEmitter = new LogEmitter(satdumpLogPath);
-        logEmitter.on('log', log => io.emit('cmceLog', log))
-    } catch (exception) {
-        console.error('Log emitter failed: ', exception)
-    }
     
     fs.watch(satdumpFilePath, async (eventType, fileName) => {
         const unprocessedFilePath = path.join(satdumpFilePath, fileName);
@@ -85,7 +76,7 @@ createServer(async (app, io) => {
                 }
                 newMessage = newSaferyNetMessage;
                 if (enableTelegramMessage && message.priority === "Distress") {
-                    tg.telegram.sendMessage(telegramChannel, newMessage.message);
+                    tg!.telegram.sendMessage(telegramChannel, newMessage.message);
                 }
             } else {
                 const newStdCMessage: StdCMessage = {
