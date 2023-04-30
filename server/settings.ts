@@ -1,5 +1,5 @@
 export const satdumpLogPath = process.env.SATDUMP_LOG_PATH || 'C:\\Users\\marco\\Documents\\inmarsat\\test\\log.txt';
-export const satdumpFilePath = process.env.SATDUMP_FILE_PATH || 'C:\\Users\\marco\\Documents\\inmarsat\\test\\';
+export const satdumpFilePath = process.env.SATDUMP_FILE_PATH;
 export const jsonExtension = '.json';
 
 export const username = process.env.USERNAME || 'admin';
@@ -16,3 +16,7 @@ export const privateKeyPath = './selfsigned.key';
 export const privateCaPath = './selfsigned.crt';
 
 export const maxHistoryItems = 2000;
+
+export const enableTelegramMessage = process.env.TELEGRAM_ENABLE || false
+export const telegramChannel = process.env.TELEGRAM_CHANNEL
+export const telegramToken = process.env.TELEGRAM_TOKEN

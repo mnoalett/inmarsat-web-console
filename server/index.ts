@@ -2,6 +2,7 @@ require('dotenv').config();
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { Telegraf } from 'telegraf';
 
 import History from './History';
 import LogEmitter from './LogEmitter';
@@ -10,10 +11,13 @@ import createServer from './createServer';
 import waitForFile from './waitForFile';
 
 import {
+    enableTelegramMessage,
     jsonExtension,
     safetyNet,
     satdumpFilePath,
     satdumpLogPath,
+    telegramChannel,
+    telegramToken
 } from './settings';
 
 if (!fs.existsSync(satdumpFilePath)) {
@@ -24,6 +28,8 @@ if (!fs.existsSync(satdumpFilePath)) {
 createServer(async (app, io) => {
 
     const history = new History();
+
+    const tg = enableTelegramMessage ? new Telegraf(telegramToken) : null; 
 
     // FIXME: renamed is fired on append also so we need to keep a hash of known files
     const processedFiles: KeyValue = {}; 
@@ -78,6 +84,9 @@ createServer(async (app, io) => {
                     ts: fileStat.mtime.getTime(),
                 }
                 newMessage = newSaferyNetMessage;
+                if (enableTelegramMessage && message.priority === "Distress") {
+                    tg.telegram.sendMessage(telegramChannel, newMessage.message);
+                }
             } else {
                 const newStdCMessage: StdCMessage = {
                     message: message.message,
