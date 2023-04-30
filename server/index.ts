@@ -11,6 +11,7 @@ import waitForFile from './waitForFile';
 
 import {
     jsonExtension,
+    safetyNet,
     satdumpFilePath,
     satdumpLogPath,
 } from './settings';
@@ -63,16 +64,31 @@ createServer(async (app, io) => {
 
             let rawdata = fs.readFileSync(unprocessedFilePath, 'utf-8');
             let message = JSON.parse(rawdata);
-      
-            const newMessage: Message = {
-                message: message.message,
-                priority: message.priority,
-                timestamp: message.timestamp,
-                service_code_and_address_name: message.service_code_and_address_name,
-                message_sequence_number: message.message_sequence_number,
-                length: message.descriptor.length,
-                repetition_number: message.repetition_number,
-                ts: fileStat.mtime.getTime(),
+            let newMessage: Message;
+
+            if (safetyNet) {
+                const newSaferyNetMessage: SafetyNetMessage = {
+                    message: message.message,
+                    priority: message.priority,
+                    timestamp: message.timestamp,
+                    service_code_and_address_name: message.service_code_and_address_name,
+                    message_sequence_number: message.message_sequence_number,
+                    length: message.descriptor.length,
+                    repetition_number: message.repetition_number,
+                    ts: fileStat.mtime.getTime(),
+                }
+                newMessage = newSaferyNetMessage;
+            } else {
+                const newStdCMessage: StdCMessage = {
+                    message: message.message,
+                    timestamp: message.timestamp,
+                    les_id: message.les_id,
+                    les_name: message.les_name,
+                    sat_name: message.sat_name,
+                    length: message.descriptor.length,
+                    ts: fileStat.mtime.getTime(),
+                }
+                newMessage = newStdCMessage;
             }
 
             history.addToHistory(newMessage);

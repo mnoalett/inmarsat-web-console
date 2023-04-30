@@ -8,10 +8,11 @@ export const isSecure = process.env.SECURE === 'true' ? true : false;
 export const isPublic = process.env.PUBLIC === 'true' ? true : false;
 export const serverPort = process.env.PORT || '8080';
 
+export const safetyNet = process.env.SAFETYNET || true;
+
 export const isDev = process.env.TS_NODE_DEV === 'true' ? true : false;
 
 export const privateKeyPath = './selfsigned.key';
 export const privateCaPath = './selfsigned.crt';
 
 export const maxHistoryItems = 2000;
-export const minimumFilesSize = 1000;

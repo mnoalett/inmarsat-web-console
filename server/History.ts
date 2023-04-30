@@ -4,7 +4,8 @@ import * as path from 'path';
 import {
     jsonExtension,
     maxHistoryItems,
-    satdumpFilePath
+    safetyNet,
+    satdumpFilePath,
 } from './settings';
 
 export default class {
@@ -20,16 +21,29 @@ export default class {
                 const stat = fs.statSync(path.join(satdumpFilePath, fileName));
                 let rawdata = fs.readFileSync(fullPath, 'utf-8');
                 let message = JSON.parse(rawdata);
-                return <Message>{
-                    message: message.message,
-                    priority: message.priority,
-                    timestamp: message.timestamp,
-                    service_code_and_address_name: message.service_code_and_address_name,
-                    message_sequence_number: message.message_sequence_number,
-                    length: message.descriptor.length,
-                    repetition_number: message.repetition_number,
-                    ts: stat.mtime.getTime(),
-                }
+                if (safetyNet) {
+                    return <SafetyNetMessage>{
+                        message: message.message,
+                        priority: message.priority,
+                        timestamp: message.timestamp,
+                        service_code_and_address_name: message.service_code_and_address_name,
+                        message_sequence_number: message.message_sequence_number,
+                        length: message.descriptor.length,
+                        repetition_number: message.repetition_number,
+                        ts: stat.mtime.getTime(),
+                    }
+                } else {
+                    return <StdCMessage>{
+                        message: message.message,
+                        priority: message.priority,
+                        timestamp: message.timestamp,
+                        length: message.descriptor.length,
+                        les_id: message.les_id,
+                        les_name: message.les_name,
+                        sat_name: message.sat_name,
+                        ts: stat.mtime.getTime(),
+                    }
+                }    
             })
             .sort((a, b) => a.timestamp - b.timestamp)
             .forEach(message => this.addToHistory(message));
