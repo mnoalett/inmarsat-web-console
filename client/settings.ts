@@ -1,1 +1,1 @@
-export const safetyNet = process.env.SAFETYNET || true;
+export const safetyNet = process.env.SAFETYNET === 'true' ? true : false;
