@@ -1,7 +1,7 @@
 declare interface KeyValue {
     [key: string]: any;
 }
-s
+
 declare interface Message {
     message: string;
     timestamp: number;
