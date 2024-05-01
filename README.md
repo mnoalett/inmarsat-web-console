@@ -1,6 +1,8 @@
 ## inmarsat-web-console
 This is a web appication written in nodejs that uses the files produced by Satdump to display the Inmarsat messages in a web interface.
 
+![Img](app_example.png)
+
 ## Prerequisites
 Before you run the project, ensure you have the following installed:
 - [Node.js](https://nodejs.org/) (v14 or higher)
@@ -47,6 +49,6 @@ If you've changed the PORT in the .env file, use the corresponding port number.
 
 There is also the possibility to send the received safetyNet distress messages to a telegram channel by configuring the followings variales in the .env file:
 ```bash
-- TELEGRAM_ENABLE=true
-- TELEGRAM_CHANNEL=   # Telegram channel
-- TELEGRAM_TOKEN=   # Telegram token
+TELEGRAM_ENABLE=true
+TELEGRAM_CHANNEL=   # Telegram channel
+TELEGRAM_TOKEN=   # Telegram token
