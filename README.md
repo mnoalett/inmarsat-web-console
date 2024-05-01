@@ -31,8 +31,9 @@ To set up the project, follow these steps:
     PUBLIC=false
     SAFETYNET=true
     SATDUMP_FILE_PATH=  # Path to the SatDump data file
+   ```
 
-    Adjust these values according to your environment and application needs.
+   Adjust these values according to your environment and application needs.
 
 4. **Start the application**
    Once you've set up the environment variables, start the application with:
@@ -40,11 +41,12 @@ To set up the project, follow these steps:
    npm run start
 
 Now you can access the web interfave with a web browser at http://localhost:8443
+
 If you've changed the PORT in the .env file, use the corresponding port number.
 
 
-There is the possibility to send the received safetyNet distress messages to a telegram channel by configuring the followings variales in the .env file:
-
+There is also the possibility to send the received safetyNet distress messages to a telegram channel by configuring the followings variales in the .env file:
+```bash
 - TELEGRAM_ENABLE=true
-- TELEGRAM_CHANNEL=<channel>
-- TELEGRAM_TOKEN=<token>
+- TELEGRAM_CHANNEL=   # Telegram channel
+- TELEGRAM_TOKEN=   # Telegram token
