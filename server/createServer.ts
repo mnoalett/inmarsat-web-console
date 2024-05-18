@@ -9,13 +9,13 @@ import { Server as SocketIOServer } from 'socket.io';
 
 import {
     isDev,
+    serverPort,
     isPublic,
     isSecure,
+    username,
     password,
     privateCaPath,
-    privateKeyPath,
-    serverPort,
-    username,
+    privateKeyPath
 } from './settings';
 
 export default (serverReadyCallback: (app: express.Express, io: SocketIOServer) => void): void => {

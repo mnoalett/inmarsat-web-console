@@ -32,7 +32,7 @@ To set up the project, follow these steps:
     SECURE=false
     PUBLIC=false
     SAFETYNET=true
-    SATDUMP_FILE_PATH=  # Path to the SatDump data file
+    SATDUMP_FILE_PATH=  # Path to the SatDump data file, this should be the value $dir descried in the "Run satdump" step
    ```
 
    Adjust these values according to your environment and application needs.
@@ -46,9 +46,19 @@ Now you can access the web interfave with a web browser at http://localhost:8443
 
 If you've changed the PORT in the .env file, use the corresponding port number.
 
-
 There is also the possibility to send the received safetyNet distress messages to a telegram channel by configuring the followings variales in the .env file:
 ```bash
 TELEGRAM_ENABLE=true
 TELEGRAM_CHANNEL=   # Telegram channel
 TELEGRAM_TOKEN=   # Telegram token
+```
+
+## Run satdump
+Start satdump as follows to feed the console.
+```bash
+satdump live inmarsat_std_c $dir --source rtlsdr 1 --samplerate 2.4e6 --frequency 1537.100e6 --gain 38 --bias --dc_block
+```
+where $dir is the the directory where to save the files.
+
+## TODO
+Create a build for the client

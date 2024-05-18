@@ -27,10 +27,11 @@ createServer(async (app, io) => {
 
     const history = new History();
 
-    const tg = enableTelegramMessage ? new Telegraf(telegramToken) : null; 
+    const filesPath: string = path.join(satdumpFilePath, safetyNet ? "EGC Message" : "Full Message");
+    const tg = enableTelegramMessage ? new Telegraf(telegramToken) : null;
 
     // FIXME: renamed is fired on append also so we need to keep a hash of known files
-    const processedFiles: KeyValue = {}; 
+    const processedFiles: KeyValue = {};
 
     const broadcastMessage = (message: string): void => {
         io.emit('message', message);
@@ -44,13 +45,13 @@ createServer(async (app, io) => {
             socketCallback(history.getHistory())
         );
     });
-    
-    fs.watch(satdumpFilePath, async (eventType, fileName) => {
-        const unprocessedFilePath = path.join(satdumpFilePath, fileName);
+
+    fs.watch(filesPath, async (eventType, fileName) => {
+        const unprocessedFilePath = path.join(filesPath, fileName);
         if (
-            eventType === 'rename' && 
+            eventType === 'rename' &&
             !processedFiles[fileName] &&
-            fileName.endsWith(jsonExtension) && 
+            fileName.endsWith(jsonExtension) &&
             fs.existsSync(unprocessedFilePath)
         ) {
 

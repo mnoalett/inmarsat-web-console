@@ -14,11 +14,12 @@ export default class {
     getHistory = () => this.history;
 
     init = async () => {
-        fs.readdirSync(satdumpFilePath)
+        let filesPath = path.join(satdumpFilePath, safetyNet ? "EGC Message" : "Full Message");
+        fs.readdirSync(filesPath)
             .filter(fileName => (fileName.endsWith(jsonExtension)))
             .map(fileName => {
-                let fullPath:string = path.join(satdumpFilePath, fileName);
-                const stat = fs.statSync(path.join(satdumpFilePath, fileName));
+                let fullPath: string = path.join(filesPath, fileName);
+                const stat = fs.statSync(path.join(filesPath, fileName));
                 let rawdata = fs.readFileSync(fullPath, 'utf-8');
                 let message = JSON.parse(rawdata);
                 if (safetyNet) {
@@ -43,7 +44,7 @@ export default class {
                         sat_name: message.sat_name,
                         ts: stat.mtime.getTime(),
                     }
-                }    
+                }
             })
             .sort((a, b) => a.timestamp - b.timestamp)
             .forEach(message => this.addToHistory(message));
