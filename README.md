@@ -36,6 +36,7 @@ To set up the project, follow these steps:
    ```
 
    Adjust these values according to your environment and application needs.
+   Username and password are not mandatory, if not present the autentication is disabled.
 
 4. **Start the application**
    Once you've set up the environment variables, start the application with:

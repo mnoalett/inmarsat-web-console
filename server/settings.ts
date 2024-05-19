@@ -1,8 +1,8 @@
 export const satdumpFilePath = process.env.SATDUMP_FILE_PATH || '/messages';
 export const jsonExtension = '.json';
 
-export const username = process.env.USERNAME || 'admin';
-export const password = process.env.PASSWORD || 'adm1n';
+export const username = process.env.USERNAME;
+export const password = process.env.PASSWORD;
 export const isSecure = process.env.SECURE === 'true';
 export const isPublic = process.env.PUBLIC === 'true';
 export const serverPort = process.env.PORT || '8080';

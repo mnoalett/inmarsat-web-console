@@ -26,13 +26,14 @@ export default (serverReadyCallback: (app: express.Express, io: SocketIOServer) 
         hmr: isDev
     });
 
-    const users: KeyValue = {};
-    users[username] = password;
-
-    app.use(basicAuth({
-        users,
-        challenge: true,
-    }));
+    if (username && password) {
+        const users: KeyValue = {};
+        users[username] = password;
+        app.use(basicAuth({
+            users,
+            challenge: true,
+        }));
+    }
 
     app.use(bundler.middleware());
 
