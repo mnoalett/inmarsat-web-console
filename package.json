@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --experimental-wasi-unstable-preview1 --experimental-wasm-bigint --project ./server/tsconfig.json --respawn  ./server/index.ts",
+    "build": "tsc --project ./server/tsconfig.json",
     "start": "tsc --project ./server/tsconfig.json",
     "poststart": "node --experimental-wasi-unstable-preview1 ./dist/index.js"
   },
