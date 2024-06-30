@@ -1,33 +1,41 @@
 import express from 'express';
-import basicAuth from 'express-basic-auth';
-import * as fs from 'fs';
 import * as http from 'http';
-import * as https from 'https';
-import localtunnel from 'localtunnel';
-import Bundler from 'parcel-bundler';
+import Parcel from '@parcel/core';
+import basicAuth from 'express-basic-auth';
 import { Server as SocketIOServer } from 'socket.io';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import { AddressInfo } from 'net';
 
 import {
     isDev,
     serverPort,
-    isPublic,
-    isSecure,
     username,
-    password,
-    privateCaPath,
-    privateKeyPath
+    password
 } from './settings';
 
-export default (serverReadyCallback: (app: express.Express, io: SocketIOServer) => void): void => {
+export default async (serverReadyCallback: (app: express.Express, io: SocketIOServer) => void): Promise<void> => {
 
+    const parcelPort = 4000;
     const app = express();
 
-    const bundler = new Bundler('./client/index.html', {
-        hmr: isDev
+    const bundler = new Parcel({
+        entries: './client/index.html',
+        mode: isDev ? 'development' : 'production',
+        serveOptions: {
+            port: Number(parcelPort)
+        }
     });
 
+    await bundler.watch();
+
+    const parcelMiddleware = createProxyMiddleware({
+        target: `http://localhost:${parcelPort}/`,
+    });
+
+    app.use('/', parcelMiddleware);
+
     if (username && password) {
-        const users: KeyValue = {};
+        const users: Record<string, string> = {};
         users[username] = password;
         app.use(basicAuth({
             users,
@@ -35,43 +43,14 @@ export default (serverReadyCallback: (app: express.Express, io: SocketIOServer) 
         }));
     }
 
-    app.use(bundler.middleware());
-
-    let httpServer: http.Server;
-
-    if (isSecure) {
-        try {
-            const privateKey = fs.readFileSync(privateKeyPath, 'utf8');
-            const certificate = fs.readFileSync(privateCaPath, 'utf8');
-            const credentials = { key: privateKey, cert: certificate, host: '0.0.0.0' };
-            httpServer = https.createServer(credentials, app);
-        } catch (error) {
-            console.error(error, 'Make sure that you generated the server certificates using generate-cert.sh');
-            process.exit(1);
-        }
-    } else {
-        httpServer = http.createServer(app);
-    }
-
-    if (isPublic && serverPort) {
-        localtunnel({
-            port: parseInt(serverPort),
-            allow_invalid_cert: true,
-            local_key: privateKeyPath,
-            local_ca: privateCaPath,
-            local_https: isSecure,
-        }).then((tunnel: any) => {
-            console.log(`Public URL ready: ${tunnel.url}`);
-        });
-    }
+    const httpServer: http.Server = http.createServer(app);
 
     const io = new SocketIOServer(httpServer);
 
-    httpServer.listen(parseInt(serverPort!), '0.0.0.0', () => {
-        const port = (<any>httpServer.address()).port;
-        const address = (<any>httpServer.address());
-        const type = isSecure ? 'https://' : 'http://';
-        console.log(`Server started: ${type}${address.address}:${port}`);
+    httpServer.listen(serverPort, () => {
+        const port = (<AddressInfo>httpServer.address()).port;
+        const address = (<AddressInfo>httpServer.address());
+        console.log(`Server started: http://${address.address}:${port}`);
         serverReadyCallback(app, io);
     });
 }

@@ -1,8 +1,8 @@
-require('dotenv').config();
-
 import * as fs from 'fs';
 import * as path from 'path';
 import { Telegraf } from 'telegraf';
+import dotenv from 'dotenv';
+dotenv.config();
 
 import History from './History';
 
@@ -41,27 +41,27 @@ createServer(async (app, io) => {
 
     io.on('connection', socket => {
         socket.emit('init');
-        socket.on('getHistory', (socketCallback: (history: Message[]) => {}) =>
+        socket.on('getHistory', (socketCallback: (history: Message[]) => void) =>
             socketCallback(history.getHistory())
         );
     });
 
     fs.watch(filesPath, async (eventType, fileName) => {
-        const unprocessedFilePath = path.join(filesPath, fileName);
+        const unprocessedFilePath = path.join(filesPath, fileName!);
         if (
             eventType === 'rename' &&
-            !processedFiles[fileName] &&
-            fileName.endsWith(jsonExtension) &&
+            !processedFiles[fileName!] &&
+            fileName!.endsWith(jsonExtension) &&
             fs.existsSync(unprocessedFilePath)
         ) {
 
-            processedFiles[fileName] = true;
+            processedFiles[fileName!] = true;
             broadcastMessage('New file detected: ' + fileName);
 
             const fileStat = await waitForFile(unprocessedFilePath);
 
-            let rawdata = fs.readFileSync(unprocessedFilePath, 'utf-8');
-            let message = JSON.parse(rawdata);
+            const rawdata = fs.readFileSync(unprocessedFilePath, 'utf-8');
+            const message = JSON.parse(rawdata);
             let newMessage: Message;
 
             if (safetyNet) {
@@ -96,7 +96,7 @@ createServer(async (app, io) => {
 
             broadcastMessage('Sending:  ' + fileName);
             io.emit('newMessage', newMessage);
-            delete processedFiles[fileName];
+            delete processedFiles[fileName!];
         }
     });
 });

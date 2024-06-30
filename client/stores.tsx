@@ -6,7 +6,7 @@ interface HistoryState extends State {
     messages: Message[],
     load: () => void,
     add: (message: Message) => void,
-};
+}
 
 const socket = SocketIOClient.io();
 

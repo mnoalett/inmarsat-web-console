@@ -14,14 +14,14 @@ export default class {
     getHistory = () => this.history;
 
     init = async () => {
-        let filesPath = path.join(satdumpFilePath, safetyNet ? "EGC Message" : "Full Message");
+        const filesPath = path.join(satdumpFilePath, safetyNet ? "EGC Message" : "Full Message");
         fs.readdirSync(filesPath)
             .filter(fileName => (fileName.endsWith(jsonExtension)))
             .map(fileName => {
-                let fullPath: string = path.join(filesPath, fileName);
+                const fullPath: string = path.join(filesPath, fileName);
                 const stat = fs.statSync(path.join(filesPath, fileName));
-                let rawdata = fs.readFileSync(fullPath, 'utf-8');
-                let message = JSON.parse(rawdata);
+                const rawdata = fs.readFileSync(fullPath, 'utf-8');
+                const message = JSON.parse(rawdata);
                 if (safetyNet) {
                     return <SafetyNetMessage>{
                         message: message.message,

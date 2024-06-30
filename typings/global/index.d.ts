@@ -1,5 +1,5 @@
 declare interface KeyValue {
-    [key: string]: any;
+    [key: string]: boolean;
 }
 
 declare interface Message {
@@ -14,7 +14,7 @@ declare interface SafetyNetMessage extends Message {
     service_code_and_address_name: string;
     message_sequence_number: number;
     repetition_number: number,
-    
+
 }
 
 declare interface StdCMessage extends Message {
