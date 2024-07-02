@@ -32,8 +32,6 @@ export default async (serverReadyCallback: (app: express.Express, io: SocketIOSe
         target: `http://localhost:${parcelPort}/`,
     });
 
-    app.use('/', parcelMiddleware);
-
     if (username && password) {
         const users: Record<string, string> = {};
         users[username] = password;
@@ -42,6 +40,8 @@ export default async (serverReadyCallback: (app: express.Express, io: SocketIOSe
             challenge: true,
         }));
     }
+
+    app.use('/', parcelMiddleware);
 
     const httpServer: http.Server = http.createServer(app);
 
