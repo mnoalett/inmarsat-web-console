@@ -1,0 +1,13 @@
+services:
+ api:
+  build:
+   context: .
+   target: build
+  volumes:
+    - ./:/app
+    - /app/node_module
+    - "$LOCAL_FILES_PATH:/data/EGC Message"
+  ports:
+    - "${PORT}:${PORT}"
+  command: npm run start
+
